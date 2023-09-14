@@ -18,7 +18,7 @@ pony <-
     superhorse = trail + reining
   )
 
-highlight_horse <- "African Tribe"
+highlight_horse <- "Smash The Copy Button"
 
 pony %>% 
   mutate(highlight = ifelse(name %in% highlight_horse, TRUE, FALSE)) %>% 
@@ -65,12 +65,12 @@ pony %>%
   geom_vline(aes(xintercept = mean(height)), colour = "grey") +
   julis_theme
 
-dam_shetland <- 12.11
+dam_shetland <- 12.5
 
 pony %>% 
   filter(
     sex == "stallion", 
-    breeding_year <= 2052,
+    breeding_year <= 2053,
     # grepl("E", extension),
     # pangare > 0,
     # flaxen > 0,
@@ -90,10 +90,12 @@ pony %>%
   geom_point(aes(colour = shetland <= 60 - dam_shetland), size = 2) +
   geom_smooth(method = "lm", se = FALSE) +
   geom_text(aes(label = name_ws), vjust = .3, hjust = "right") +
-  geom_hline(aes(yintercept = mean(trail)), colour = "grey") +
-  geom_vline(aes(xintercept = mean(height)), colour = "grey") +
+  geom_hline(aes(yintercept = mean(superhorse, na.rm = TRUE)), colour = "grey") +
+  geom_vline(aes(xintercept = mean(height, na.rm = TRUE)), colour = "grey") +
   geom_vline(xintercept = 100) +
   geom_vline(xintercept = 140) +
+  scale_x_continuous(breaks = seq(100, 140, 5)) +
+  scale_y_continuous(breaks = seq(200, 350, 25)) +
   julis_theme
 
 
