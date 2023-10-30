@@ -41,23 +41,101 @@ pony_scraper <- function(horse_id, my_session, flaxen = 0) {
     html_elements(xpath = '//*[@id="inhalt"]/text()') %>% 
     as.character()
   
-  registered_status <- 
-    gsub(
-      "Papiere: ", "", steckbrief_text[grepl("Papiere:", steckbrief_text)]
-    )
-  
-  sex_german <- 
-    gsub(
-      "Geschlecht: ", "", steckbrief_text[grepl("Geschlecht:", steckbrief_text)]
-    )
-  
-  # Foals have two values (current + expected height). Filter out expected height.
-  height <- steckbrief_text[grepl("Stock", steckbrief_text)]
-  
-  if (grepl("Endmaß", height)) {
-    height <- gsub(".*Endmaß: (.+) cm.*", "\\1", height)
+  if (length(steckbrief_text[grepl("Papiere:", steckbrief_text)]) != 0) {
+    registered_status <- 
+      gsub(
+        "Papiere: ", "", steckbrief_text[grepl("Papiere:", steckbrief_text)]
+      )
+    
+    registered_status <-
+      case_when(
+        registered_status == "nein (" ~ 0,
+        (
+          registered_status == "beantragt"  & 
+            grepl(
+              "Pintaloosa Pony", 
+              steckbrief_text[grepl("Rasse:", steckbrief_text)]
+            )
+        ) ~ .5,
+        (
+          registered_status == "ja" & 
+            grepl(
+              "Pintaloosa Pony", 
+              steckbrief_text[grepl("Rasse:", steckbrief_text)]
+            )
+        ) ~ 1,
+        TRUE ~ 0
+      )
+    
+    sex_german <- 
+      gsub(
+        "Geschlecht: ", "", steckbrief_text[grepl("Geschlecht:", steckbrief_text)]
+      )
+    
+    # Foals have two values (current + expected height). Filter out expected height.
+    height <- steckbrief_text[grepl("Stock", steckbrief_text)]
+    
+    if (grepl("Endmaß", height)) {
+      height <- gsub(".*Endmaß: (.+) cm.*", "\\1", height)
+    } else {
+      height <- as.numeric(gsub(",", ".", gsub("[^,0-9]+", "", height)))
+    }
+    
+    id <- gsub("[^0-9]+", "", steckbrief_text[grepl("ID:", steckbrief_text)])
+    
+    breeding_year <- 
+      gsub(
+        "[^0-9]+", "", steckbrief_text[grepl("Geburtsdatum:", steckbrief_text)]
+      )
+    
+    skin <- 
+      gsub("Statur: |(-Typ)", "", steckbrief_text[grepl("Statur:", steckbrief_text)])
+    
+    colour <- steckbrief_text[grepl("Farbe:", steckbrief_text)]
+    pattern <- steckbrief_text[grepl("Zeichnung:", steckbrief_text)]
+    
   } else {
-    height <- as.numeric(gsub(",", ".", gsub("[^,0-9]+", "", height)))
+    # If horse is for sale, structure is different
+    handler_steckbrief <- 
+      steckbrief %>% 
+      html_element(xpath = '//*[@id="inhalt"]/div[2]') %>% 
+      html_text()
+    
+    registered_status <- 
+      gsub(".*Rasse: (.+)Statur.*", "\\1", handler_steckbrief)
+    
+    registered_status <-
+      ifelse(
+        registered_status == "Pintaloosa-Pony mit Papieren",
+        1,
+        0
+      )
+    
+    sex_german <- gsub(".*Geschlecht: (.+)Alter.*", "\\1", handler_steckbrief)
+    
+    height <- gsub(".*Stockmaß: (.+)Preis.*", "\\1", handler_steckbrief)
+    
+    if (grepl("Endmaß", height)) {
+      height <- gsub(".*Endmaß: (.+) cm.*", "\\1", height)
+    } else {
+      height <- as.numeric(gsub(",", ".", gsub("[^,0-9]+", "", height)))
+    }
+    
+    id <- horse_id
+    
+    breeding_year <- 
+      steckbrief %>% 
+      html_elements(xpath = '//*[@id="inhalt"]/text()') %>% 
+      as.character()
+    
+    breeding_year <- 
+      gsub("[^0-9]", "", breeding_year[grepl("geboren bei", breeding_year)])
+    
+    skin <- gsub(".*Statur: (.+)Farbe.*", "\\1", handler_steckbrief)
+    skin <- sub("\\r\\n", "", skin)
+    
+    colour <- gsub(".*Farbe: (.+)Zeichnung.*", "\\1", handler_steckbrief)
+    pattern <- gsub(".*Zeichnung: (.+)Geschlecht.*", "\\1", handler_steckbrief)
   }
   
   ## BLOOD PERCENTAGES -----------------------------------------------------------
@@ -189,21 +267,21 @@ pony_scraper <- function(horse_id, my_session, flaxen = 0) {
   
   dapples <- 
     ifelse(
-      grepl("Dapples", steckbrief_text[grepl("Farbe:", steckbrief_text)]),
+      grepl("Dapples", colour),
       1,
       0
     )
   
   rabicano <- 
     ifelse(
-      grepl("Rabicano", steckbrief_text[grepl("Zeichnung:", steckbrief_text)]),
+      grepl("Rabicano", pattern),
       1,
       0
     )
   
   sooty <-
     ifelse(
-      grepl("Sooty", steckbrief_text[grepl("Farbe:", steckbrief_text)]),
+      grepl("Sooty", colour),
       1,
       0
     )
@@ -301,31 +379,14 @@ pony_scraper <- function(horse_id, my_session, flaxen = 0) {
         steckbrief %>% 
         html_elements(xpath = '//*[@id="inhalt"]/h1') %>% 
         as.character() %>% 
-        gsub("<.*?>|\\\n", "", .),
-      registered = 
-        case_when(
-          registered_status == "nein (" ~ 0,
-          (
-            registered_status == "beantragt"  & 
-              grepl(
-                "Pintaloosa Pony", 
-                steckbrief_text[grepl("Rasse:", steckbrief_text)]
-              )
-          ) ~ .5,
-          (
-            registered_status == "ja" & 
-              grepl(
-                "Pintaloosa Pony", 
-                steckbrief_text[grepl("Rasse:", steckbrief_text)]
-              )
-          ) ~ 1,
-          TRUE ~ 0
-        ),
-      id = gsub("[^0-9]+", "", steckbrief_text[grepl("ID:", steckbrief_text)]),
-      breeding_year = 
-        gsub(
-          "[^0-9]+", "", steckbrief_text[grepl("Geburtsdatum:", steckbrief_text)]
-        ),
+        # delete everything in italics
+        gsub("<i>.*</i>", "", .) %>% 
+        # delete html
+        gsub("<.*?>|\\\n", "", .) %>% 
+        trimws(),
+      registered = registered_status,
+      id = id,
+      breeding_year = breeding_year,
       sex = 
         case_when(
           sex_german == "Hengst " ~ "stallion",
@@ -335,7 +396,7 @@ pony_scraper <- function(horse_id, my_session, flaxen = 0) {
       trail = trail_potential,
       reining = reining_potential,
       superhorse = trail_potential + reining_potential,
-      skin = gsub("Statur: |(-Typ)", "", steckbrief_text[grepl("Statur:", steckbrief_text)]),
+      skin = trimws(skin),
       poa = poa,
       shetland = shetland,
       paint = paint,
