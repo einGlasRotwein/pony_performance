@@ -13,15 +13,17 @@ pony <- read_sheet(sheet_url)
 
 pony <- 
   pony %>% 
-  mutate(
-    name_ws = paste0("  ", name, "  "),
-    superhorse = trail + reining
-  )
+  filter(!is.na(name))
 
-highlight_horse <- "Smash The Copy Button"
+pony <- 
+  pony %>% 
+  mutate(name_ws = paste0("  ", name, "  "))
+
+highlight_horse <- "Still Addicted"
 
 pony %>% 
   mutate(highlight = ifelse(name %in% highlight_horse, TRUE, FALSE)) %>% 
+  filter(!name %in% c("Rocher", "Charmed", "Shalimar", "Social Network", "Joey")) %>% 
   # filter(registered == 1, sex == "stallion",
   #        !grepl("Prl", cream_pearl), !grepl("Mu", mushroom)) %>%
   
@@ -65,19 +67,19 @@ pony %>%
   geom_vline(aes(xintercept = mean(height)), colour = "grey") +
   julis_theme
 
-dam_shetland <- 12.5
+dam_shetland <- 26.28
 
 pony %>% 
   filter(
     sex == "stallion", 
-    breeding_year <= 2053,
+    breeding_year <= 2054,
     # grepl("E", extension),
-    # pangare > 0,
     # flaxen > 0,
     # grepl("SW", splashed_white),
     # grepl("Mu", mushroom),
     # grepl("Cr", cream_pearl),
-    grepl("Prl", cream_pearl),
+    # !grepl("O", overo),
+    # grepl("Prl", cream_pearl),
     # grepl("LP", leopard),
     # (
     #   grepl("Tob|Sb", kit) |
