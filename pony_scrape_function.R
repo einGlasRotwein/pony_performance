@@ -116,94 +116,61 @@ pony_scraper <- function(horse_id, my_session, flaxen = 0) {
   
   gene_url <- 
     paste0(
-      "https://www.equinepassion.de/intern/index.php?page=pferd&kat=training&pferd=",
+      "https://www.equinepassion.de/intern/index.php?page=pferd&pferd=",
       horse_id,
-      "&kat=zucht&s=&f=&g="
+      "&kat=zucht"
     )
   
   gene_page <- 
     my_session %>% 
     session_jump_to(gene_url)
   
-  extension <- 
+  gene_boxes <- 
     gene_page %>% 
-    html_elements(xpath = '//*[@id="inhalt"]/div[11]/div[1]') %>% 
+    html_elements('.flexbox_item_farbgen') %>% 
     html_text()
+  
+  extension <- gene_boxes[1]
   extension <- gsub("(Extension|\\/| )", "", extension)
   extension <- ifelse(extension %in% c("beantragt", "nicht getestet"), NA, extension)
   
-  agouti <- 
-    gene_page %>% 
-    html_elements(xpath = '//*[@id="inhalt"]/div[11]/div[2]') %>% 
-    html_text()
+  agouti <- gene_boxes[2]
   agouti <- gsub("(Agouti|\\/| )", "", agouti)
   agouti <- ifelse(agouti %in% c("beantragt", "nicht getestet"), NA, agouti)
   
-  cream_pearl <- 
-    gene_page %>% 
-    html_elements(xpath = '//*[@id="inhalt"]/div[11]/div[3]') %>% 
-    html_text()
+  cream_pearl <- gene_boxes[3]
   cream_pearl <- gsub("(Cream|Pearl|\\/| )", "", cream_pearl)
   cream_pearl <- ifelse(cream_pearl %in% c("beantragt", "nicht getestet"), NA, cream_pearl)
   
-  dun <- 
-    gene_page %>% 
-    html_elements(xpath = '//*[@id="inhalt"]/div[11]/div[4]') %>% 
-    html_text()
+  dun <- gene_boxes[4]
   dun <- gsub("(Dun|\\/| )", "", dun)
   dun <- ifelse(agouti %in% c("beantragt", "nicht getestet"), NA, dun)
   
-  champagne <- 
-    gene_page %>% 
-    html_elements(xpath = '//*[@id="inhalt"]/div[11]/div[5]') %>% 
-    html_text()
+  champagne <- gene_boxes[5]
   champagne <- gsub("(Champagne|\\/| )", "", champagne)
   champagne <- ifelse(champagne %in% c("beantragt", "nicht getestet"), NA, champagne)
   
-  mushroom <- 
-    gene_page %>% 
-    html_elements(xpath = '//*[@id="inhalt"]/div[11]/div[6]') %>% 
-    html_text()
+  mushroom <- gene_boxes[6]
   mushroom <- gsub("(Mushroom|\\/| )", "", mushroom)
   mushroom <- ifelse(mushroom %in% c("beantragt", "nicht getestet"), NA, mushroom)
   
-  silver <- 
-    gene_page %>% 
-    html_elements(xpath = '//*[@id="inhalt"]/div[11]/div[7]') %>% 
-    html_text()
+  silver <- gene_boxes[7]
   silver <- gsub("(Silver|\\/| )", "", silver)
   silver <- ifelse(silver %in% c("beantragt", "nicht getestet"), NA, silver)
   
-  graying <- 
-    gene_page %>% 
-    html_elements(xpath = '//*[@id="inhalt"]/div[11]/div[8]') %>% 
-    html_text()
+  graying <- gene_boxes[8]
   graying <- gsub("(Graying|\\/| )", "", graying)
   graying <- ifelse(graying %in% c("beantragt", "nicht getestet"), NA, graying)
   
-  kit <- 
-    gene_page %>% 
-    html_elements(xpath = '//*[@id="inhalt"]/div[11]/div[9]') %>% 
-    html_text()
+  kit <- gene_boxes[9]
   kit <- gsub("(KIT|\\/| )", "", kit)
   kit <- ifelse(kit %in% c("beantragt", "nicht getestet"), NA, kit)
   
-  overo <- 
-    gene_page %>% 
-    html_elements(xpath = '//*[@id="inhalt"]/div[11]/div[10]') %>% 
-    html_text()
+  overo <- gene_boxes[10]
   overo <- gsub("(Overo|\\/| )", "", overo)
   overo <- ifelse(overo %in% c("beantragt", "nicht getestet"), NA, overo)
   
-  # 1
-  "Leopard & Patn1 LP/lp   n/n"
-  # 2
-  "Leopard & Patn1 lp/lpPatn1 beantragt"
-  
-  leopard <- 
-    gene_page %>% 
-    html_elements(xpath = '//*[@id="inhalt"]/div[11]/div[11]') %>% 
-    html_text()
+  leopard <- gene_boxes[11]
   leopard <- sub("Leopard & Patn1 ", "", leopard)
   first_word_lp <- str_extract(leopard, "^[A-z]+")
   
@@ -216,10 +183,7 @@ pony_scraper <- function(horse_id, my_session, flaxen = 0) {
   }
   leopard <- sub("\\/", "", leopard)
   
-  splashed_white <- 
-    gene_page %>% 
-    html_elements(xpath = '//*[@id="inhalt"]/div[11]/div[12]') %>% 
-    html_text()
+  splashed_white <- gene_boxes[12]
   splashed_white <- gsub("(Splashed White|\\/| )", "", splashed_white)
   splashed_white <- ifelse(splashed_white %in% c("beantragt", "nicht getestet"), NA, splashed_white)
   
@@ -335,9 +299,9 @@ pony_scraper <- function(horse_id, my_session, flaxen = 0) {
     data.frame(
       name =
         steckbrief %>% 
-        html_elements(xpath = '//*[@id="inhalt"]/a[3]/b') %>% 
+        html_elements(xpath = '//*[@id="inhalt"]/h1') %>% 
         as.character() %>% 
-        gsub("<.*?>", "", .),
+        gsub("<.*?>|\\\n", "", .),
       registered = 
         case_when(
           registered_status == "nein (" ~ 0,
