@@ -2,7 +2,7 @@
 #' Scrape the data of a horse in EquinePassion
 #'
 #' @param horse_id Character. Horse's id as listed in the passport.
-#' @param session An rvest session where you are already logged in with your 
+#' @param my_session An rvest session where you are already logged in with your 
 #'                EquinePassion user ID. See main script.
 #' @param flaxen Integer. Can either be 1 = visible flaxen, .5 = hidden flaxen 
 #'               or 0 = no flaxen. Is not testable and thus needs to be set 
@@ -15,7 +15,7 @@
 #' to wrangle the data.
 #' 
 
-pony_scraper <- function(horse_id, session, flaxen = 0) {
+pony_scraper <- function(horse_id, my_session, flaxen = 0) {
   
   flaxen <- 0 # needs to be set manually
   
@@ -33,7 +33,7 @@ pony_scraper <- function(horse_id, session, flaxen = 0) {
     )
   
   steckbrief <- 
-    session %>% 
+    my_session %>% 
     session_jump_to(horse)
   
   steckbrief_text <- 
@@ -122,7 +122,7 @@ pony_scraper <- function(horse_id, session, flaxen = 0) {
     )
   
   gene_page <- 
-    session %>% 
+    my_session %>% 
     session_jump_to(gene_url)
   
   extension <- 
@@ -254,7 +254,7 @@ pony_scraper <- function(horse_id, session, flaxen = 0) {
     )
   
   trail_page <- 
-    session %>% 
+    my_session %>% 
     session_jump_to(trail_url)
   
   trail_text <- 
@@ -299,7 +299,7 @@ pony_scraper <- function(horse_id, session, flaxen = 0) {
     )
   
   reining_page <- 
-    session %>% 
+    my_session %>% 
     session_jump_to(reining_url)
   
   reining_text <- 
