@@ -210,43 +210,43 @@ pony_scraper <- function(horse_id, my_session, flaxen = 0) {
   
   extension <- gene_boxes[1]
   extension <- gsub("(Extension|\\/| )", "", extension)
-  extension <- ifelse(extension %in% c("beantragt", "nicht getestet"), NA, extension)
+  extension <- ifelse(extension %in% c("beantragt", "nichtgetestet"), NA, extension)
   
   agouti <- gene_boxes[2]
   agouti <- gsub("(Agouti|\\/| )", "", agouti)
-  agouti <- ifelse(agouti %in% c("beantragt", "nicht getestet"), NA, agouti)
+  agouti <- ifelse(agouti %in% c("beantragt", "nichtgetestet"), NA, agouti)
   
   cream_pearl <- gene_boxes[3]
   cream_pearl <- gsub("(Cream|Pearl|\\/| )", "", cream_pearl)
-  cream_pearl <- ifelse(cream_pearl %in% c("beantragt", "nicht getestet"), NA, cream_pearl)
+  cream_pearl <- ifelse(cream_pearl %in% c("beantragt", "nichtgetestet"), NA, cream_pearl)
   
   dun <- gene_boxes[4]
   dun <- gsub("(Dun|\\/| )", "", dun)
-  dun <- ifelse(agouti %in% c("beantragt", "nicht getestet"), NA, dun)
+  dun <- ifelse(agouti %in% c("beantragt", "nichtgetestet"), NA, dun)
   
   champagne <- gene_boxes[5]
   champagne <- gsub("(Champagne|\\/| )", "", champagne)
-  champagne <- ifelse(champagne %in% c("beantragt", "nicht getestet"), NA, champagne)
+  champagne <- ifelse(champagne %in% c("beantragt", "nichtgetestet"), NA, champagne)
   
   mushroom <- gene_boxes[6]
   mushroom <- gsub("(Mushroom|\\/| )", "", mushroom)
-  mushroom <- ifelse(mushroom %in% c("beantragt", "nicht getestet"), NA, mushroom)
+  mushroom <- ifelse(mushroom %in% c("beantragt", "nichtgetestet"), NA, mushroom)
   
   silver <- gene_boxes[7]
   silver <- gsub("(Silver|\\/| )", "", silver)
-  silver <- ifelse(silver %in% c("beantragt", "nicht getestet"), NA, silver)
+  silver <- ifelse(silver %in% c("beantragt", "nichtgetestet"), NA, silver)
   
   graying <- gene_boxes[8]
   graying <- gsub("(Graying|\\/| )", "", graying)
-  graying <- ifelse(graying %in% c("beantragt", "nicht getestet"), NA, graying)
+  graying <- ifelse(graying %in% c("beantragt", "nichtgetestet"), NA, graying)
   
   kit <- gene_boxes[9]
   kit <- gsub("(KIT|\\/| )", "", kit)
-  kit <- ifelse(kit %in% c("beantragt", "nicht getestet"), NA, kit)
+  kit <- ifelse(kit %in% c("beantragt", "nichtgetestet"), NA, kit)
   
   overo <- gene_boxes[10]
   overo <- gsub("(Overo|\\/| )", "", overo)
-  overo <- ifelse(overo %in% c("beantragt", "nicht getestet"), NA, overo)
+  overo <- ifelse(overo %in% c("beantragt", "nichtgetestet"), NA, overo)
   
   leopard <- gene_boxes[11]
   leopard <- sub("Leopard & Patn1 ", "", leopard)
@@ -263,7 +263,7 @@ pony_scraper <- function(horse_id, my_session, flaxen = 0) {
   
   splashed_white <- gene_boxes[12]
   splashed_white <- gsub("(Splashed White|\\/| )", "", splashed_white)
-  splashed_white <- ifelse(splashed_white %in% c("beantragt", "nicht getestet"), NA, splashed_white)
+  splashed_white <- ifelse(splashed_white %in% c("beantragt", "nichtgetestet"), NA, splashed_white)
   
   dapples <- 
     ifelse(
