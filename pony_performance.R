@@ -10,14 +10,14 @@ custom_theme <-
     legend.position = "top"
   )
 
-sheet_url <- "https://docs.google.com/spreadsheets/d/1uDBoNSobxQK0mpM5YOBRUNxGW6LoTFjf6zkTaLDKu5s/edit#gid=212293532" 
+sheet_url <- "sheet_url" # enter sheet url 
 
-# Log in with google Account (can be pre-authorized via googlesheets4)
-pony <- read_sheet(sheet_url)
+# Log in with google account (can be pre-authorized via googlesheets4)
+data <- read_sheet(sheet_url)
 
 # To create space around the names for the plot
-pony <- 
-  pony %>% 
+data <- 
+  data %>% 
   mutate(name_ws = paste0("  ", name, "  "))
 
 ## HIGHLIGHT HORSE -------------------------------------------------------------
@@ -25,10 +25,10 @@ pony <-
 # Plot all horses (height/skill) and highlight a single horse to show where the 
 # horse stands relative to the other horses.
 
-highlight_horse <- "Still Addicted"
+highlight_horse <- "Still Not Mush"
 discipline <- sym("superhorse") # or "trail" or "reining"
 
-pony %>% 
+data %>% 
   mutate(highlight = ifelse(name %in% highlight_horse, TRUE, FALSE)) %>% 
   # Exclude some Reining stallions that distort the plot
   filter(!name %in% c("Rocher", "Charmed", "Shalimar", "Social Network", "Joey")) %>% 
@@ -58,7 +58,7 @@ dam_shetland <- 26.28
 
 discipline <- sym("superhorse") # or "trail" or "reining"
 
-pony %>% 
+data %>% 
   filter(
     sex == "stallion", 
     breeding_year <= 2054,
@@ -109,7 +109,7 @@ ingame_year <- 2057
 discipline <- sym("reining") # or "trail" or "reining"
 
 # Ponies for young children
-pony %>% 
+data %>% 
   filter(
     breeding_year <= (2057 - 3),
     height <= 110
@@ -120,7 +120,7 @@ pony %>%
 # Children 9 years or older
 # (technically, children can't ride horses > 150 cm, but no Pintaloosa Pony 
 # should be above that threshold, so we don't filter for that)
-pony %>% 
+data %>% 
   filter(
     breeding_year <= (2057 - 3),
     height <= 130
