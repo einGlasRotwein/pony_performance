@@ -413,14 +413,14 @@ pony_scraper <- function(horse_id, my_session, flaxen = 0) {
         gsub("<.*?>|\\\n", "", .) %>% 
         trimws(),
       registered = registered_status,
-      id = id,
-      breeding_year = breeding_year,
+      id = as.numeric(id),
+      breeding_year = as.numeric(breeding_year),
       sex = 
         case_when(
           sex_german == "Hengst " ~ "stallion",
           sex_german == "Stute " ~ "mare"
         ),
-      height = height,
+      height = as.numeric(height),
       trail = trail_potential,
       reining = reining_potential,
       superhorse = trail_potential + reining_potential,
@@ -449,4 +449,17 @@ pony_scraper <- function(horse_id, my_session, flaxen = 0) {
     )
   
   return(output)
+}
+
+update_ponies <- function(new_pony, sheet_url) {
+  safety <- readline(cat("Overwrite sheet? (1 = yes, 0 = no)\n"))
+  
+  if (safety == 0) {
+    return(cat("Update cancelled."))
+  } else if (safety == 1) {
+    sheet_append(sheet_url, new_pony)
+    return(cat("Sheet updated."))
+  } else {
+    stop("Invalid input. Please enter either 1 (yes) or 2 (no).")
+  }
 }
