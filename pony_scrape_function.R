@@ -210,50 +210,78 @@ pony_scraper <- function(horse_id, my_session, flaxen = 0) {
   
   extension <- gene_boxes[1]
   extension <- gsub("(Extension|\\/| )", "", extension)
-  extension <- ifelse(extension %in% c("beantragt", "nichtgetestet"), NA, extension)
+  extension <- 
+    ifelse(
+      extension %in% c("beantragt", "nichtgetestet"), NA_character_, extension
+    )
   
   agouti <- gene_boxes[2]
   agouti <- gsub("(Agouti|\\/| )", "", agouti)
-  agouti <- ifelse(agouti %in% c("beantragt", "nichtgetestet"), NA, agouti)
+  agouti <- 
+    ifelse(
+      agouti %in% c("beantragt", "nichtgetestet"), NA_character_, agouti
+    )
   
   cream_pearl <- gene_boxes[3]
   cream_pearl <- gsub("(Cream|Pearl|\\/| )", "", cream_pearl)
-  cream_pearl <- ifelse(cream_pearl %in% c("beantragt", "nichtgetestet"), NA, cream_pearl)
+  cream_pearl <- 
+    ifelse(
+      cream_pearl %in% c("beantragt", "nichtgetestet"), NA_character_, cream_pearl
+    )
   
   dun <- gene_boxes[4]
   dun <- gsub("(Dun|\\/| )", "", dun)
-  dun <- ifelse(agouti %in% c("beantragt", "nichtgetestet"), NA, dun)
+  dun <- 
+    ifelse(agouti %in% c("beantragt", "nichtgetestet"), NA_character_, dun)
   
   champagne <- gene_boxes[5]
   champagne <- gsub("(Champagne|\\/| )", "", champagne)
-  champagne <- ifelse(champagne %in% c("beantragt", "nichtgetestet"), NA, champagne)
+  champagne <- 
+    ifelse(
+      champagne %in% c("beantragt", "nichtgetestet"), NA_character_, champagne
+    )
   
   mushroom <- gene_boxes[6]
   mushroom <- gsub("(Mushroom|\\/| )", "", mushroom)
-  mushroom <- ifelse(mushroom %in% c("beantragt", "nichtgetestet"), NA, mushroom)
+  mushroom <- 
+    ifelse(
+      mushroom %in% c("beantragt", "nichtgetestet"), NA_character_, mushroom
+    )
   
   silver <- gene_boxes[7]
   silver <- gsub("(Silver|\\/| )", "", silver)
-  silver <- ifelse(silver %in% c("beantragt", "nichtgetestet"), NA, silver)
+  silver <- 
+    ifelse(
+      silver %in% c("beantragt", "nichtgetestet"), NA_character_, silver
+    )
   
   graying <- gene_boxes[8]
   graying <- gsub("(Graying|\\/| )", "", graying)
-  graying <- ifelse(graying %in% c("beantragt", "nichtgetestet"), NA, graying)
+  graying <- 
+    ifelse(
+      graying %in% c("beantragt", "nichtgetestet"), NA_character_, graying
+    )
   
   kit <- gene_boxes[9]
   kit <- gsub("(KIT|\\/| )", "", kit)
-  kit <- ifelse(kit %in% c("beantragt", "nichtgetestet"), NA, kit)
+  kit <- 
+    ifelse(
+      kit %in% c("beantragt", "nichtgetestet"), NA_character_, kit
+    )
   
   overo <- gene_boxes[10]
   overo <- gsub("(Overo|\\/| )", "", overo)
-  overo <- ifelse(overo %in% c("beantragt", "nichtgetestet"), NA, overo)
+  overo <- 
+    ifelse(
+      overo %in% c("beantragt", "nichtgetestet"), NA_character_, overo
+    )
   
   leopard <- gene_boxes[11]
   leopard <- sub("Leopard & Patn1 ", "", leopard)
   first_word_lp <- str_extract(leopard, "^[A-z]+")
   
-  if (first_word_lp %in% c("nicht", "beantragt")) {
-    leopard <- NA
+  if (first_word_lp %in% c("nicht", "Leopard")) {
+    leopard <- NA_character_
   } else {
     # Ugly hardcoded solution because Pat1 messes up the structure, depending 
     # on whether it's tested or not ...
