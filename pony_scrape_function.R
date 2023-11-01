@@ -451,15 +451,49 @@ pony_scraper <- function(horse_id, my_session, flaxen = 0) {
   return(output)
 }
 
-update_ponies <- function(new_pony, sheet_url) {
+update_ponies <- function(new_pony, sheet_url, sheet_name) {
   safety <- readline(cat("Overwrite sheet? (1 = yes, 0 = no)\n"))
   
   if (safety == 0) {
+    
     return(cat("Update cancelled."))
+    
   } else if (safety == 1) {
-    sheet_append(sheet_url, new_pony)
+    
+    ponies <- read_sheet(sheet_url)
+    
+    # Check if pony already exists in sheet.
+    if (new_pony$id %in% ponies$id) {
+      
+      confirm_update <- 
+        readline(cat("ID already exists. Overwrite? (1 = yes, 0 = no)\n"))
+      
+      if (confirm_update == 0) {
+        
+        return(cat("Update cancelled."))
+        
+      } else if (confirm_update == 1) {
+        
+        ponies[which(ponies$id %in% new_pony$id), ] <- new_pony
+        sheet_write(ponies, sheet_url, sheet = sheet_name)
+        
+      } else {
+        
+        stop("Invalid input. Please enter either 1 (yes) or 0 (no).")
+        
+      }
+      
+    } else {
+      
+      sheet_append(sheet_url, new_pony, sheet = sheet_name) 
+      
+    }
+    
     return(cat("Sheet updated."))
+    
   } else {
-    stop("Invalid input. Please enter either 1 (yes) or 2 (no).")
+    
+    stop("Invalid input. Please enter either 1 (yes) or 0 (no).")
+    
   }
 }
