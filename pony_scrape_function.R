@@ -186,7 +186,7 @@ pony_scraper <- function(horse_ids, my_session, flaxen = 0) {
         gsub("[^0-9]", "", breeding_year[grepl("geboren bei", breeding_year)])
       
       skin <- gsub(".*Statur: (.+)Farbe.*", "\\1", handler_steckbrief)
-      skin <- sub("\\r\\n", "", skin)
+      skin <- gsub("\\r\\n|(-Typ)", "", skin)
       
       colour <- gsub(".*Farbe: (.+)Zeichnung.*", "\\1", handler_steckbrief)
       pattern <- gsub(".*Zeichnung: (.+)Geschlecht.*", "\\1", handler_steckbrief)
