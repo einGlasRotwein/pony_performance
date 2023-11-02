@@ -194,7 +194,7 @@ pony_scraper <- function(horse_ids, my_session, flaxen = 0) {
     
     ## BLOOD PERCENTAGES -----------------------------------------------------------
     
-    poa <- steckbrief_text[grepl("Pony of the Americas", steckbrief_text)]
+    poa <- steckbrief_text[grepl("% Pony of the Americas", steckbrief_text)]
     poa <- 
       as.numeric(
         ifelse(
@@ -204,7 +204,7 @@ pony_scraper <- function(horse_ids, my_session, flaxen = 0) {
         )
       )
     
-    shetland <- steckbrief_text[grepl("Shetlandpony", steckbrief_text)]
+    shetland <- steckbrief_text[grepl("% Shetlandpony", steckbrief_text)]
     shetland <- 
       as.numeric(
         ifelse(
@@ -214,7 +214,7 @@ pony_scraper <- function(horse_ids, my_session, flaxen = 0) {
         )
       )
     
-    paint <- steckbrief_text[grepl("American Paint Horse", steckbrief_text)]
+    paint <- steckbrief_text[grepl("% American Paint Horse", steckbrief_text)]
     paint <- 
       as.numeric(
         ifelse(
@@ -224,7 +224,7 @@ pony_scraper <- function(horse_ids, my_session, flaxen = 0) {
         )
       )
     
-    quarter <- steckbrief_text[grepl("American Quarter Horse", steckbrief_text)]
+    quarter <- steckbrief_text[grepl("% American Quarter Horse", steckbrief_text)]
     quarter <- 
       as.numeric(
         ifelse(
@@ -234,7 +234,7 @@ pony_scraper <- function(horse_ids, my_session, flaxen = 0) {
         )
       )
     
-    appaloosa <- steckbrief_text[grepl("Appaloosa", steckbrief_text)]
+    appaloosa <- steckbrief_text[grepl("% Appaloosa", steckbrief_text)]
     appaloosa <- 
       as.numeric(
         ifelse(
