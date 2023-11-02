@@ -535,7 +535,10 @@ update_ponies <- function(new_ponies, sheet_url, sheet_name) {
         ponies <- ponies[order(ponies$id), ]
         new_ponies <- new_ponies[order(new_ponies$id), ]
         
-        ponies[which(ponies$id %in% new_ponies$id), ] <- new_ponies
+        # never overwrite flaxen column
+        flaxen_id <- which(names(ponies) == "flaxen")
+        ponies[which(ponies$id %in% new_ponies$id), -flaxen_id] <- 
+          new_ponies[ , -flaxen_id]
         sheet_write(ponies, sheet_url, sheet = sheet_name)
         
       } else {
