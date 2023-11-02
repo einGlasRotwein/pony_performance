@@ -499,7 +499,7 @@ pony_scraper <- function(horse_ids, my_session, flaxen = 0) {
   return(output)
 }
 
-update_ponies <- function(new_pony, sheet_url, sheet_name) {
+update_ponies <- function(new_ponies, sheet_url, sheet_name) {
   safety <- readline(cat("Overwrite sheet? (1 = yes, 0 = no)\n"))
   
   if (safety == 0) {
@@ -511,10 +511,19 @@ update_ponies <- function(new_pony, sheet_url, sheet_name) {
     ponies <- read_sheet(sheet_url)
     
     # Check if pony already exists in sheet.
-    if (new_pony$id %in% ponies$id) {
+    if (any(new_ponies$id %in% ponies$id)) {
       
       confirm_update <- 
-        readline(cat("ID already exists. Overwrite? (1 = yes, 0 = no)\n"))
+        readline(
+          cat(
+            paste0(
+              "The following IDs already exists:\n", 
+              paste0(new_ponies$id[new_ponies$id %in% ponies$id], collapse = "\n"),
+              "\n\n",
+              "Overwrite? (1 = yes, 0 = no)\n"
+            )
+          )
+        )
       
       if (confirm_update == 0) {
         
@@ -522,7 +531,11 @@ update_ponies <- function(new_pony, sheet_url, sheet_name) {
         
       } else if (confirm_update == 1) {
         
-        ponies[which(ponies$id %in% new_pony$id), ] <- new_pony
+        # Order so data is overwritten in the right places
+        ponies <- ponies[order(ponies$id), ]
+        new_ponies <- new_ponies[order(new_ponies$id), ]
+        
+        ponies[which(ponies$id %in% new_ponies$id), ] <- new_ponies
         sheet_write(ponies, sheet_url, sheet = sheet_name)
         
       } else {
@@ -533,7 +546,7 @@ update_ponies <- function(new_pony, sheet_url, sheet_name) {
       
     } else {
       
-      sheet_append(sheet_url, new_pony, sheet = sheet_name) 
+      sheet_append(sheet_url, new_ponies, sheet = sheet_name) 
       
     }
     
