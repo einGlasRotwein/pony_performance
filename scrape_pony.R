@@ -42,12 +42,15 @@ pony_scraper("2173058", logged_in) # erwachsen auktion
 pony_scraper("1214411", logged_in) # verstorben
 pony_scraper("9869", logged_in) # Gnadenbrot
 
+# multiple ids
+pony_scraper(c("3877844", "4599145"), logged_in)
+
 ## ADD TO SHEET ----------------------------------------------------------------
 
 # enter google sheet id
 sheet_url <- "sheet_url"
 
-to_add <- pony_scraper("4601452", logged_in)
+to_add <- pony_scraper("4337233", logged_in)
 
 # Log in with google account (can be pre-authorized via googlesheets4) and add 
 # new pony to sheet
