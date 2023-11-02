@@ -41,7 +41,29 @@ pony_scraper <- function(horse_id, my_session, flaxen = 0) {
     html_elements(xpath = '//*[@id="inhalt"]/text()') %>% 
     as.character()
   
+  # Check if horse still exists
+  out_of_game <- any(grepl("abgegeben an|Freizeitreiter", steckbrief_text))
+  
+  died <- 
+    steckbrief %>% 
+    html_elements(xpath = '//*[@id="inhalt"]/div/text()') %>% 
+    grepl("verstorben", .) %>% 
+    any()
+  
+  if (out_of_game | died) stop("Pferd ist nicht mehr im Spiel.")
+  
   if (length(steckbrief_text[grepl("Papiere:", steckbrief_text)]) != 0) {
+    
+    # If owned by a player: Take advantage of the fact that the last person 
+    # in the owner history is the last link of "inhalt".
+    # Bit of a dirty hack, but there is unfortunately no other way to 
+    # consistently identify the owner element.
+    owner <- 
+      steckbrief %>% 
+      html_elements(xpath = '//*[@id="inhalt"]/a/text()') %>% 
+      as.character() %>% 
+      tail(1)
+    
     registered_status <- 
       gsub(
         "Papiere: ", "", steckbrief_text[grepl("Papiere:", steckbrief_text)]
@@ -100,6 +122,15 @@ pony_scraper <- function(horse_id, my_session, flaxen = 0) {
       steckbrief %>% 
       html_element(xpath = '//*[@id="inhalt"]/div[2]') %>% 
       html_text()
+    
+    # If the horse is for sale, we find the current owner (Hengststation, 
+    # Händler ...) at the second-to-last element of steckbrief_text (last 
+    # element is .)
+    owner <- steckbrief_text[length(steckbrief_text) - 1]
+    owner <- gsub(".*verkauft an (.+) für.*", "\\1", owner)
+    
+    # Check if horse is sold at the auction
+    if (grepl("wird versteigert", handler_steckbrief)) owner <- "Auktionshaus"
     
     registered_status <- 
       gsub(".*Rasse: (.+)Statur.*", "\\1", handler_steckbrief)
@@ -412,6 +443,7 @@ pony_scraper <- function(horse_id, my_session, flaxen = 0) {
         # delete html
         gsub("<.*?>|\\\n", "", .) %>% 
         trimws(),
+      owner = owner,
       registered = registered_status,
       id = as.numeric(id),
       breeding_year = as.numeric(breeding_year),
