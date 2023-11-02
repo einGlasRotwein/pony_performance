@@ -37,15 +37,17 @@ pony_scraper("4360096", logged_in) # fohlen händler
 
 pony_scraper("4405124", logged_in) # fohlen pv
 
-pony_scraper("2719360", logged_in) # erwachsen auktion
+pony_scraper("2173058", logged_in) # erwachsen auktion
 
-pony_scraper("2732991", logged_in)
+pony_scraper("1214411", logged_in) # verstorben
+pony_scraper("9869", logged_in) # Gnadenbrot
 
 ## ADD TO SHEET ----------------------------------------------------------------
 
-sheet_url <- "sheet_url" # enter google sheet id
+# enter google sheet id
+sheet_url <- "sheet_url"
 
-to_add <- pony_scraper("4599145", logged_in)
+to_add <- pony_scraper("4601452", logged_in)
 
 # Log in with google account (can be pre-authorized via googlesheets4) and add 
 # new pony to sheet
