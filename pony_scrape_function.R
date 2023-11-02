@@ -465,7 +465,8 @@ pony_scraper <- function(horse_ids, my_session, flaxen = 0) {
     output$sex[i_horse] <- 
       case_when(
         sex_german == "Hengst " ~ "stallion",
-        sex_german == "Stute " ~ "mare"
+        sex_german == "Stute " ~ "mare",
+        owner == "Hengststation" ~ "stallion"
       )
     
     output$height[i_horse] <- as.numeric(height)
