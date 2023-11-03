@@ -25,24 +25,25 @@ data <-
 # Plot all horses (height/skill) and highlight a single horse to show where the 
 # horse stands relative to the other horses.
 
-highlight_horse <- "Still Not Mush"
+highlight_horse <- "Added Lead"
 discipline <- sym("superhorse") # or "trail" or "reining"
 
 data %>% 
   mutate(highlight = ifelse(name %in% highlight_horse, TRUE, FALSE)) %>% 
   # Exclude some Reining stallions that distort the plot
   filter(!name %in% c("Rocher", "Charmed", "Shalimar", "Social Network", "Joey")) %>% 
-  ggplot(aes(x = height, y = !!discipline, colour = highlight)) +
+  ggplot(aes(x = height, y = !!discipline, colour = highlight, alpha = highlight)) +
   # height limits for registering Pintaloosa Ponys
   geom_vline(xintercept = 100) +
   geom_vline(xintercept = 140) +
   # mean values for height + potential
   geom_hline(aes(yintercept = mean(!!discipline, na.rm = TRUE)), colour = "grey") +
   geom_vline(aes(xintercept = mean(height)), colour = "grey") +
-  geom_point(alpha = .5, size = 2) +
+  geom_point(size = 2) +
   geom_smooth(method = "lm", se = FALSE) +
   geom_text(aes(label = name_ws), vjust = .3, hjust = "right") +
   scale_colour_manual(values = c("black", "red")) +
+  scale_alpha_manual(values = c(.3, 1)) +
   scale_x_continuous(breaks = seq(100, 140, 5)) +
   scale_y_continuous(breaks = seq(50, 400, 25)) +
   custom_theme +
