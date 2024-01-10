@@ -20,14 +20,14 @@ pony_scraper <- function(horse_ids, my_session, flaxen = 0) {
   ## SETTINGS ------------------------------------------------------------------
   
   n_disciplines <- 11
-  output <- data.frame(matrix(nrow = length(horse_ids), ncol = 32))
+  output <- data.frame(matrix(nrow = length(horse_ids), ncol = 33))
   names(output) <- 
     c(
-      "name", "owner", "registered", "id", "breeding_year", "sex", "height", 
-      "trail", "reining", "superhorse", "skin", "poa", "shetland", "paint", 
-      "quarter", "appaloosa", "extension", "agouti", "cream_pearl", "dun", 
-      "champagne", "mushroom", "silver", "graying", "kit", "overo", "leopard", 
-      "splashed_white", "flaxen", "dapples", "rabicano", "sooty"      
+      "name", "owner", "registered", "id", "breeding_year", "sex", "discipline", 
+      "height", "trail", "reining", "superhorse", "skin", "poa", "shetland", 
+      "paint", "quarter", "appaloosa", "extension", "agouti", "cream_pearl", 
+      "dun", "champagne", "mushroom", "silver", "graying", "kit", "overo", 
+      "leopard", "splashed_white", "flaxen", "dapples", "rabicano", "sooty"      
     )
   
   ## GENERAL -------------------------------------------------------------------
@@ -453,7 +453,20 @@ pony_scraper <- function(horse_ids, my_session, flaxen = 0) {
     reining_potential <- gsub(".*\\((.+) Punkte.*", "\\1", reining_potential)
     reining_potential <- as.numeric(reining_potential)
     
-    ## BUILD DATA FRAME ------------------------------------------------------------
+    ## DETERMINE DISCIPLINE ----------------------------------------------------
+    
+    # Current criterion: If trail/reining is at least 50% better than the 
+    # remaining discipline, that is regarded as the main discipline. Otherwise, 
+    # the horse counts as superhorse.
+    if (reining_potential > trail_potential * 1.5) {
+      discipline <- "reining"
+    } else if (trail_potential > reining_potential * 1.5) {
+      discipline <- "trail"
+    } else {
+      discipline <- "superhorse"
+    }
+    
+    ## BUILD DATA FRAME --------------------------------------------------------
     
     output$name[i_horse] <- horse_name
     
@@ -469,9 +482,10 @@ pony_scraper <- function(horse_ids, my_session, flaxen = 0) {
         owner == "Hengststation" ~ "stallion"
       )
     
+    output$discipline[i_horse] <- discipline
     output$height[i_horse] <- as.numeric(height)
-    output$trail[i_horse] <- as.numeric(trail_potential)
-    output$reining[i_horse] <- as.numeric(reining_potential)
+    output$trail[i_horse] <- trail_potential
+    output$reining[i_horse] <- reining_potential
     output$superhorse[i_horse] <- trail_potential + reining_potential
     output$skin[i_horse] <- trimws(skin)
     output$poa[i_horse] <- poa
