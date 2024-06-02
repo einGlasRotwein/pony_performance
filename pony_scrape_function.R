@@ -414,7 +414,7 @@ pony_scraper <- function(horse_ids, my_session, flaxen = 0) {
       html_elements(xpath = '//*[@id="inhalt"]/text()') %>% 
       as.character()
     
-    trail_potential <- trail_text[grepl("Turnierklasse", trail_text)]
+    trail_potential <- trail_text[grepl("Potenzial: Turnierklasse", trail_text)]
     
     # For grown horses, the trail potential is a single value on the training page
     # For foals, the training page is a list of all disciplines. Since the order is 
@@ -459,7 +459,7 @@ pony_scraper <- function(horse_ids, my_session, flaxen = 0) {
       html_elements(xpath = '//*[@id="inhalt"]/text()') %>% 
       as.character()
     
-    reining_potential <- reining_text[grepl("Turnierklasse", reining_text)]
+    reining_potential <- reining_text[grepl("Potenzial: Turnierklasse", reining_text)]
     
     if (length(reining_potential) != 1) {
       discipline_order <- vector("character", n_disciplines)
