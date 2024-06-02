@@ -20,14 +20,15 @@ pony_scraper <- function(horse_ids, my_session, flaxen = 0) {
   ## SETTINGS ------------------------------------------------------------------
   
   n_disciplines <- 11
-  output <- data.frame(matrix(nrow = length(horse_ids), ncol = 33))
+  output <- data.frame(matrix(nrow = length(horse_ids), ncol = 34))
   names(output) <- 
     c(
       "name", "owner", "registered", "id", "breeding_year", "sex", "discipline", 
       "height", "trail", "reining", "superhorse", "skin", "poa", "shetland", 
       "paint", "quarter", "appaloosa", "extension", "agouti", "cream_pearl", 
       "dun", "champagne", "mushroom", "silver", "graying", "kit", "overo", 
-      "leopard", "splashed_white", "flaxen", "dapples", "rabicano", "sooty"      
+      "leopard", "splashed_white", "flaxen", "dapples", "rabicano", "sooty",
+      "nuance"
     )
   
   ## GENERAL -------------------------------------------------------------------
@@ -368,6 +369,33 @@ pony_scraper <- function(horse_ids, my_session, flaxen = 0) {
         0
       )
     
+    # colour nuance
+    breeding_text <- 
+      gene_page %>% 
+      html_elements(xpath = '//*[@id="inhalt"]/text()')
+    
+    nuance <- as.character(breeding_text[grepl("Farbnuance", breeding_text)])
+    
+    if (grepl("unbekannt", nuance)) {
+      
+      nuance <- NA
+      
+    } else if (grepl("Farbnuance:", nuance)) {
+      
+      nuance <-
+        substr(
+          nuance, 
+          gregexec("[0-9-]+", nuance)[[1]][,1], 
+          gregexec("[0-9-]+", nuance)[[1]][,1] + 
+            attr(gregexec("[0-9-]+", nuance)[[1]], "match.length")[,1] - 1
+        )
+      
+    } else {
+      
+      nuance <- NA
+      
+    }
+    
     ## TRAIL -----------------------------------------------------------------------
     
     trail_url <- 
@@ -509,6 +537,7 @@ pony_scraper <- function(horse_ids, my_session, flaxen = 0) {
     output$dapples[i_horse] <- dapples
     output$rabicano[i_horse] <- rabicano
     output$sooty[i_horse] <- sooty
+    output$nuance[i_horse] <- nuance
   }
   
   return(output)
